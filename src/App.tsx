@@ -1,3 +1,3 @@
 export const App = () => {
-    return <div>test</div>
+    return <div>this is from config branch</div>
 }
