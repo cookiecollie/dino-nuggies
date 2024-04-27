@@ -26,7 +26,7 @@ module.exports = {
         ecmaVersion: "latest",
         sourceType: "module",
     },
-    plugins: ["@typescript-eslint", "react"],
+    plugins: ["@typescript-eslint", "react", "prettier"],
     rules: {
         quotes: ["warn", "double"],
         "react/react-in-jsx-scope": "off",
@@ -35,6 +35,12 @@ module.exports = {
             {
                 component: true,
                 html: true,
+            },
+        ],
+        "prettier/prettier": [
+            "warn",
+            {
+                endOfLine: "auto",
             },
         ],
     },
