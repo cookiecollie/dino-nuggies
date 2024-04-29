@@ -1,0 +1,41 @@
+.tabs {
+    @apply w-full h-full;
+
+    .labels {
+        @apply flex relative;
+
+        .label {
+            @apply flex justify-center items-center h-12 px-4 font-bold;
+
+            transition: color, border-color;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 250ms;
+        }
+
+        .label[data-selected="true"] {
+            @apply text-white border-nikko-400;
+        }
+
+        .indicator {
+            @apply absolute h-full bg-nikko-400 top-0 left-0 z-[-1];
+
+            transition: transform, width;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 250ms;
+        }
+    }
+
+    .panels {
+        @apply p-4 h-[calc(100%-48px)];
+
+        .panel {
+            transition: transform;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 250ms;
+        }
+
+        .panel[data-selected="false"] {
+            @apply hidden;
+        }
+    }
+}
