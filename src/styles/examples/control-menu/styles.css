@@ -1,0 +1,18 @@
+.wrapper {
+    @apply w-full h-[100vh] p-12;
+
+    .breadcrumb {
+        @apply flex gap-2;
+
+        & > * {
+            @apply cursor-pointer;
+        }
+    }
+
+    &-cards {
+        @apply h-full flex;
+        .card-grid {
+            @apply grid grid-cols-5 justify-center gap-x-1 items-center w-full;
+        }
+    }
+}

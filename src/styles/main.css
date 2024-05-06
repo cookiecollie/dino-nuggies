@@ -1,5 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
 
+@import "./examples/control-menu/styles.css";
+@import "./components/card/styles.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
