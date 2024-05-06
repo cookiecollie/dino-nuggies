@@ -1,0 +1,26 @@
+.breadcrumb {
+    @apply text-mine-shaft-400 font-semibold;
+
+    ol {
+        @apply flex gap-2;
+    }
+}
+
+.crumb {
+    .link {
+        transition: color, background-color;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 250ms;
+
+        @apply px-1 rounded-md;
+    }
+
+    .link:hover[data-is-link="true"],
+    .link:focus-visible[data-islink="true"] {
+        @apply text-black;
+    }
+}
+
+.crumb:last-of-type {
+    @apply text-black;
+}
