@@ -2,6 +2,8 @@
 @import "./tabs/styles.css";
 @import "./select/styles.css";
 
+@import "./breadcrumb/styles.css";
+
 @import "../styles/navigation/styles.css";
 @import "../styles/stagger-group/styles.css";
 
