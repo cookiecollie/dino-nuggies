@@ -1,0 +1,15 @@
+{
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.organizeImports": "explicit",
+        "source.addMissingImports": "explicit"
+    },
+    "editor.wordWrap": "on",
+    "workbench.editor.customLabels.patterns": {
+        "**/src/components/**/*.tsx": "${filename} - Component",
+        "**/src/components/**/index.tsx": "${filename} - Component || ${dirname} ||",
+        "**/src/stories/**/*.stories.tsx": "${filename} - Story",
+        "**/src/styles/**/styles.css": "${filename} - Style || ${dirname} ||"
+    }
+}
