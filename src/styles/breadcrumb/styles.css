@@ -1,5 +1,16 @@
 .breadcrumb {
-    @apply text-mine-shaft-400 font-semibold;
+    @apply text-mine-shaft-400 font-semibold flex gap-2;
+
+    .arrow {
+        transition: color;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 250ms;
+        @apply cursor-pointer;
+    }
+
+    .arrow:hover {
+        @apply text-black;
+    }
 
     ol {
         @apply flex gap-2;
