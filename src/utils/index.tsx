@@ -1,4 +1,3 @@
-import React from "react"
 import { IsList, useCustomListItem } from "./IsList"
 export { IsList, useCustomListItem }
 

@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
 @import "./tabs/styles.css";
+@import "./select/styles.css";
 
 @import "../styles/navigation/styles.css";
 @import "../styles/stagger-group/styles.css";
