@@ -1,0 +1,23 @@
+.select {
+    &-anchor {
+        @apply h-10 border-2 rounded-lg flex items-center px-2 justify-between;
+
+        .arrow {
+            transition: transform;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 250ms;
+        }
+
+        .arrow[data-is-open="true"] {
+            transform: rotate(180deg);
+        }
+    }
+
+    &-floating {
+        @apply drop-shadow-1 bg-white py-4 rounded-lg;
+
+        .option {
+            @apply w-full flex px-4 h-10 items-center;
+        }
+    }
+}
