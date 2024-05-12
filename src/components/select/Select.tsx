@@ -9,7 +9,8 @@ import {
     useInteractions,
 } from "@floating-ui/react"
 import { ChevronDown } from "lucide-react"
-import { PropsWithChildren, useEffect, useRef, useState } from "react"
+import { Children, PropsWithChildren, useEffect, useRef, useState } from "react"
+import { List } from "react-virtualized"
 import { mergeRefs } from "../../utils"
 
 interface SelectProps extends PropsWithChildren {}
@@ -34,6 +35,8 @@ export const Select = (props: SelectProps) => {
     const referenceRef = useRef<HTMLDivElement>(null)
 
     const referenceMerged = mergeRefs([refs.setReference, referenceRef])
+
+    const childrenAsArray = Children.toArray(children)
 
     useEffect(() => {
         const handleClickOutside = (event: PointerEvent) => {
@@ -75,14 +78,34 @@ export const Select = (props: SelectProps) => {
                         style={floatingStyles}
                         {...getFloatingProps()}
                     >
-                        <div
+                        {/* <div
                             className="select-floating"
                             style={{
                                 width: `${referenceRef.current?.getBoundingClientRect().width}px`,
                             }}
                         >
                             {children}
-                        </div>
+                        </div> */}
+
+                        <List
+                            width={
+                                referenceRef.current?.getBoundingClientRect()
+                                    .width ?? 0
+                            }
+                            height={240}
+                            rowCount={childrenAsArray.length}
+                            rowHeight={40}
+                            rowRenderer={({ index, key, style }) => (
+                                <button
+                                    key={key}
+                                    className="option"
+                                    style={style}
+                                >
+                                    {childrenAsArray[index]}
+                                </button>
+                            )}
+                            className="select-floating"
+                        />
                     </div>
                 </FloatingFocusManager>
             )}
@@ -94,6 +117,6 @@ interface OptionProps extends PropsWithChildren {}
 const Option = (props: OptionProps) => {
     const { children } = props
 
-    return <button className="option">{children}</button>
+    return <>{children}</>
 }
 Select.Option = Option
