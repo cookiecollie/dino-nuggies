@@ -17,15 +17,19 @@
         @apply drop-shadow-1 bg-white py-4 rounded-lg;
 
         .option {
-            transition: background-color, color;
+            /* transition: background-color, color;
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 250ms;
+            transition-duration: 50ms; */
 
             @apply w-full flex px-4 h-10 items-center whitespace-nowrap text-ellipsis overflow-hidden;
         }
 
-        /* .option:hover {
+        .option[data-is-focused="true"] {
+            @apply bg-mine-shaft-400/20;
+        }
+
+        .option[data-is-selected="true"] {
             @apply bg-nikko-400 text-white;
-        } */
+        }
     }
 }
