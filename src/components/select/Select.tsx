@@ -32,6 +32,7 @@ interface ItemContextType {
     selectedIndex: number | undefined
     focusedIndex: number | undefined
     handleSelect: (index: number) => void
+    handleFocus: (index: number) => void
 }
 
 const ItemContext = createContext<ItemContextType>({} as ItemContextType)
@@ -68,7 +69,15 @@ export const Select = (props: SelectProps) => {
         })
     }, [])
 
+    const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
+        undefined
+    )
+    const [focusedIndex, setFocusedIndex] = useState<number | undefined>(-1)
+
     useEffect(() => {
+        if (!isOpen && selectedIndex !== undefined)
+            setFocusedIndex(selectedIndex)
+
         const handleClickOutside = (event: PointerEvent) => {
             if (
                 isOpen &&
@@ -82,15 +91,22 @@ export const Select = (props: SelectProps) => {
 
         document.addEventListener("pointerdown", handleClickOutside)
 
-        return () => {
+        return () =>
             document.removeEventListener("pointerdown", handleClickOutside)
-        }
     }, [isOpen])
 
-    const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
-        undefined
-    )
-    const [focusedIndex, setFocusedIndex] = useState(0)
+    useEffect(() => {
+        const handleOnEnter = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                setSelectedIndex(focusedIndex)
+                setIsOpen(false)
+            }
+        }
+
+        document.addEventListener("keydown", handleOnEnter)
+
+        return () => document.removeEventListener("keydown", handleOnEnter)
+    }, [focusedIndex])
 
     const handleSelect = (index: number) => {
         setSelectedIndex(index)
@@ -98,9 +114,13 @@ export const Select = (props: SelectProps) => {
         setIsOpen(false)
     }
 
+    const handleFocus = (index: number) => {
+        setFocusedIndex(index)
+    }
+
     const itemContext = useMemo(
-        () => ({ focusedIndex, handleSelect, selectedIndex }),
-        [focusedIndex, handleSelect, selectedIndex]
+        () => ({ focusedIndex, handleSelect, selectedIndex, handleFocus }),
+        [focusedIndex, handleSelect, selectedIndex, handleFocus]
     )
 
     return (
@@ -141,7 +161,7 @@ export const Select = (props: SelectProps) => {
                             <ArrowKeyStepper
                                 columnCount={1}
                                 rowCount={items.current.length}
-                                isControlled
+                                // isControlled
                                 scrollToRow={focusedIndex}
                                 onScrollToChange={({ scrollToRow }) =>
                                     setFocusedIndex(scrollToRow)
@@ -149,31 +169,34 @@ export const Select = (props: SelectProps) => {
                                 mode="cells"
                             >
                                 {({ onSectionRendered }) => (
-                                    <List
-                                        width={
-                                            referenceRef.current?.getBoundingClientRect()
-                                                .width ?? 0
-                                        }
-                                        height={240}
-                                        rowCount={items.current.length}
-                                        rowHeight={40}
-                                        rowRenderer={({
-                                            index,
-                                            key,
-                                            style,
-                                        }) => (
-                                            <Item
-                                                index={index}
-                                                key={key}
-                                                style={style}
-                                            >
-                                                {labels.current[index]}
-                                            </Item>
-                                        )}
-                                        onSectionRendered={onSectionRendered}
-                                        scrollToIndex={focusedIndex}
-                                        className="select-floating"
-                                    />
+                                    <div className="select-floating">
+                                        <List
+                                            width={
+                                                referenceRef.current?.getBoundingClientRect()
+                                                    .width ?? 0
+                                            }
+                                            height={240}
+                                            rowCount={items.current.length}
+                                            rowHeight={40}
+                                            rowRenderer={({
+                                                index,
+                                                key,
+                                                style,
+                                            }) => (
+                                                <Item
+                                                    index={index}
+                                                    key={key}
+                                                    style={style}
+                                                >
+                                                    {labels.current[index]}
+                                                </Item>
+                                            )}
+                                            onSectionRendered={
+                                                onSectionRendered
+                                            }
+                                            scrollToIndex={focusedIndex}
+                                        />
+                                    </div>
                                 )}
                             </ArrowKeyStepper>
                         </ItemContext.Provider>
@@ -189,7 +212,7 @@ const Item = (
 ) => {
     const { index, key, style, children } = props
 
-    const { selectedIndex, focusedIndex, handleSelect } =
+    const { selectedIndex, focusedIndex, handleSelect, handleFocus } =
         useContext(ItemContext)
 
     return (
@@ -200,6 +223,7 @@ const Item = (
             data-is-selected={index === selectedIndex}
             data-is-focused={index === focusedIndex}
             onClick={() => handleSelect(index)}
+            onPointerEnter={() => handleFocus(index)}
         >
             {children}
         </button>

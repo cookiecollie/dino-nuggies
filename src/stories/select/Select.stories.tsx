@@ -10,7 +10,7 @@ type Story = StoryObj<typeof Select>
 
 export const Default: Story = {
     render: ({ ...args }) => (
-        <div className="w-[25%]">
+        <div className="min-w-[25%] w-fit">
             <Select {...args}>
                 {countries.map((c) => (
                     <Select.Option key={c.code}>{c.name}</Select.Option>

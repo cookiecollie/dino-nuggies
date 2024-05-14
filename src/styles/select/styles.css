@@ -1,6 +1,6 @@
 .select {
     &-anchor {
-        @apply h-10 border-2 rounded-lg flex items-center px-2 justify-between;
+        @apply h-10 border-2 rounded-lg flex items-center px-2 justify-between gap-2;
 
         .arrow {
             transition: transform;
