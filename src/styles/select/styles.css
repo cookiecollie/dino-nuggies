@@ -24,11 +24,11 @@
             @apply w-full flex px-4 h-10 items-center whitespace-nowrap text-ellipsis overflow-hidden;
         }
 
-        .option[data-is-focused="true"] {
+        .option[data-focused="true"] {
             @apply bg-mine-shaft-400/20;
         }
 
-        .option[data-is-selected="true"] {
+        .option[aria-selected="true"] {
             @apply bg-nikko-400 text-white;
         }
     }

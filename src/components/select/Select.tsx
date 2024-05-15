@@ -5,8 +5,10 @@ import {
     offset,
     shift,
     useClick,
+    useDismiss,
     useFloating,
     useInteractions,
+    useRole,
 } from "@floating-ui/react"
 import { ChevronDown } from "lucide-react"
 import {
@@ -51,8 +53,14 @@ export const Select = (props: SelectProps) => {
     })
 
     const click = useClick(context)
+    const dismiss = useDismiss(context)
+    const role = useRole(context, { role: "listbox" })
 
-    const { getFloatingProps, getReferenceProps } = useInteractions([click])
+    const { getFloatingProps, getReferenceProps } = useInteractions([
+        click,
+        dismiss,
+        role,
+    ])
 
     const referenceRef = useRef<HTMLDivElement>(null)
 
@@ -81,22 +89,6 @@ export const Select = (props: SelectProps) => {
             setFocusedIndex(selectedIndex)
 
         if (!isOpen && selectedIndex === undefined) setFocusedIndex(-1)
-
-        const handleClickOutside = (event: PointerEvent) => {
-            if (
-                isOpen &&
-                refs.floating &&
-                !refs.floating.current?.contains(event.target as Node) &&
-                refs.reference &&
-                !referenceRef.current?.contains(event.target as Node)
-            )
-                setIsOpen(false)
-        }
-
-        document.addEventListener("pointerdown", handleClickOutside)
-
-        return () =>
-            document.removeEventListener("pointerdown", handleClickOutside)
     }, [isOpen])
 
     const handleSelect = (index: number) => {
@@ -122,8 +114,12 @@ export const Select = (props: SelectProps) => {
                 className="select-anchor"
                 tabIndex={0}
                 onKeyDown={(e) => {
-                    if (["ArrowDown", "ArrowUp", "Enter"].indexOf(e.key) !== -1)
+                    if (
+                        ["ArrowDown", "ArrowUp", "Enter"].indexOf(e.key) !== -1
+                    ) {
+                        if (selectedIndex === undefined) setFocusedIndex(0)
                         setIsOpen(!isOpen)
+                    }
                 }}
             >
                 <p>
@@ -167,10 +163,11 @@ export const Select = (props: SelectProps) => {
                                         className="select-floating"
                                         tabIndex={0}
                                         onKeyDown={(e) => {
-                                            if (e.key === "Enter")
+                                            if (
+                                                e.key === "Enter" &&
+                                                focusedIndex !== -1
+                                            )
                                                 handleSelect(focusedIndex!)
-                                            else if (e.key === "Escape")
-                                                setIsOpen(false)
                                         }}
                                     >
                                         <List
@@ -223,9 +220,10 @@ const Item = (
         <button
             key={key}
             className="option"
+            role="option"
             style={style}
-            data-is-selected={index === selectedIndex}
-            data-is-focused={index === focusedIndex}
+            aria-selected={index === selectedIndex}
+            data-focused={index === focusedIndex}
             onClick={() => handleSelect(index)}
             onPointerEnter={() => handleFocus(index)}
             tabIndex={-1}
