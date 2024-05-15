@@ -62,6 +62,8 @@ export const Select = (props: SelectProps) => {
     const items = useRef<ReactElement[]>([])
 
     useLayoutEffect(() => {
+        labels.current = []
+        items.current = []
         Children.forEach(children, (c) => {
             const el = c as ReactElement<OptionProps>
             labels.current.push(el.props.children as string)
@@ -77,6 +79,8 @@ export const Select = (props: SelectProps) => {
     useEffect(() => {
         if (!isOpen && selectedIndex !== undefined)
             setFocusedIndex(selectedIndex)
+
+        if (!isOpen && selectedIndex === undefined) setFocusedIndex(-1)
 
         const handleClickOutside = (event: PointerEvent) => {
             if (
@@ -94,19 +98,6 @@ export const Select = (props: SelectProps) => {
         return () =>
             document.removeEventListener("pointerdown", handleClickOutside)
     }, [isOpen])
-
-    useEffect(() => {
-        const handleOnEnter = (event: KeyboardEvent) => {
-            if (event.key === "Enter") {
-                setSelectedIndex(focusedIndex)
-                setIsOpen(false)
-            }
-        }
-
-        document.addEventListener("keydown", handleOnEnter)
-
-        return () => document.removeEventListener("keydown", handleOnEnter)
-    }, [focusedIndex])
 
     const handleSelect = (index: number) => {
         setSelectedIndex(index)
@@ -130,6 +121,10 @@ export const Select = (props: SelectProps) => {
                 {...getReferenceProps()}
                 className="select-anchor"
                 tabIndex={0}
+                onKeyDown={(e) => {
+                    if (["ArrowDown", "ArrowUp", "Enter"].indexOf(e.key) !== -1)
+                        setIsOpen(!isOpen)
+                }}
             >
                 <p>
                     {selectedIndex !== undefined
@@ -161,7 +156,6 @@ export const Select = (props: SelectProps) => {
                             <ArrowKeyStepper
                                 columnCount={1}
                                 rowCount={items.current.length}
-                                // isControlled
                                 scrollToRow={focusedIndex}
                                 onScrollToChange={({ scrollToRow }) =>
                                     setFocusedIndex(scrollToRow)
@@ -169,7 +163,16 @@ export const Select = (props: SelectProps) => {
                                 mode="cells"
                             >
                                 {({ onSectionRendered }) => (
-                                    <div className="select-floating">
+                                    <div
+                                        className="select-floating"
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter")
+                                                handleSelect(focusedIndex!)
+                                            else if (e.key === "Escape")
+                                                setIsOpen(false)
+                                        }}
+                                    >
                                         <List
                                             width={
                                                 referenceRef.current?.getBoundingClientRect()
@@ -195,6 +198,7 @@ export const Select = (props: SelectProps) => {
                                                 onSectionRendered
                                             }
                                             scrollToIndex={focusedIndex}
+                                            tabIndex={-1}
                                         />
                                     </div>
                                 )}
@@ -224,6 +228,7 @@ const Item = (
             data-is-focused={index === focusedIndex}
             onClick={() => handleSelect(index)}
             onPointerEnter={() => handleFocus(index)}
+            tabIndex={-1}
         >
             {children}
         </button>
