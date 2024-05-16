@@ -1,3 +1,4 @@
 import { Select } from "./Select"
-export { Select }
+import { VirtualizedOption, VirtualizedSelect } from "./VirtualizedSelect"
+export { Select, VirtualizedOption, VirtualizedSelect }
 
