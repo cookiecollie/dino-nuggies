@@ -1,5 +1,6 @@
 import {
     FloatingFocusManager,
+    FloatingList,
     autoUpdate,
     flip,
     offset,
@@ -8,36 +9,37 @@ import {
     useDismiss,
     useFloating,
     useInteractions,
+    useListItem,
+    useListNavigation,
     useRole,
+    useTypeahead,
 } from "@floating-ui/react"
 import { ChevronDown } from "lucide-react"
 import {
-    Children,
     PropsWithChildren,
-    ReactElement,
     createContext,
+    useCallback,
     useContext,
-    useEffect,
-    useLayoutEffect,
     useMemo,
     useRef,
     useState,
 } from "react"
-import { ArrowKeyStepper, List, ListRowProps } from "react-virtualized"
 import { mergeRefs } from "../../utils"
 
-interface SelectProps extends PropsWithChildren {
+interface SelectContextProps {
+    focusedIndex: number | null
+    selectedIndex: number | null
+    getItemProps: ReturnType<typeof useInteractions>["getItemProps"]
+    handleSelect: (index: number | null) => void
+}
+
+const SelectContext = createContext<SelectContextProps>(
+    {} as SelectContextProps
+)
+
+export interface SelectProps extends PropsWithChildren {
     labelText?: string
 }
-
-interface ItemContextType {
-    selectedIndex: number | undefined
-    focusedIndex: number | undefined
-    handleSelect: (index: number) => void
-    handleFocus: (index: number) => void
-}
-
-const ItemContext = createContext<ItemContextType>({} as ItemContextType)
 
 export const Select = (props: SelectProps) => {
     const { children, labelText = "Select..." } = props
@@ -52,191 +54,131 @@ export const Select = (props: SelectProps) => {
         middleware: [offset(8), shift(), flip()],
     })
 
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+    const [focusedIndex, setFocusedIndex] = useState<number | null>(null)
+    const [selectedLabel, setSelectedLabel] = useState<string | null>(null)
+
+    const elementsRef = useRef<Array<HTMLElement | null>>([])
+    const labelsRef = useRef<Array<string | null>>([])
+
+    const handleSelect = useCallback((index: number | null) => {
+        setSelectedIndex(index)
+        setIsOpen(false)
+        if (index !== null) setSelectedLabel(labelsRef.current[index])
+    }, [])
+
+    const handleTypeahead = (index: number | null) => {
+        if (isOpen) setFocusedIndex(index)
+        else handleSelect(index)
+    }
+
+    const listNav = useListNavigation(context, {
+        listRef: elementsRef,
+        activeIndex: focusedIndex,
+        selectedIndex,
+        onNavigate: setFocusedIndex,
+    })
+
+    const typeahead = useTypeahead(context, {
+        listRef: labelsRef,
+        activeIndex: focusedIndex,
+        selectedIndex,
+        onMatch: handleTypeahead,
+    })
+
     const click = useClick(context)
     const dismiss = useDismiss(context)
     const role = useRole(context, { role: "listbox" })
 
-    const { getFloatingProps, getReferenceProps } = useInteractions([
-        click,
-        dismiss,
-        role,
-    ])
+    const { getFloatingProps, getItemProps, getReferenceProps } =
+        useInteractions([click, dismiss, role, listNav, typeahead])
+
+    const selectContext = useMemo(
+        () => ({
+            focusedIndex,
+            selectedIndex,
+            getItemProps,
+            handleSelect,
+        }),
+        [focusedIndex, selectedIndex, getItemProps, handleSelect]
+    )
 
     const referenceRef = useRef<HTMLDivElement>(null)
-
-    const referenceMerged = mergeRefs([refs.setReference, referenceRef])
-
-    const labels = useRef<string[]>([])
-    const items = useRef<ReactElement[]>([])
-
-    useLayoutEffect(() => {
-        labels.current = []
-        items.current = []
-        Children.forEach(children, (c) => {
-            const el = c as ReactElement<OptionProps>
-            labels.current.push(el.props.children as string)
-            items.current.push(el)
-        })
-    }, [])
-
-    const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
-        undefined
-    )
-    const [focusedIndex, setFocusedIndex] = useState<number | undefined>(-1)
-
-    useEffect(() => {
-        if (!isOpen && selectedIndex !== undefined)
-            setFocusedIndex(selectedIndex)
-
-        if (!isOpen && selectedIndex === undefined) setFocusedIndex(-1)
-    }, [isOpen])
-
-    const handleSelect = (index: number) => {
-        setSelectedIndex(index)
-        setFocusedIndex(index)
-        setIsOpen(false)
-    }
-
-    const handleFocus = (index: number) => {
-        setFocusedIndex(index)
-    }
-
-    const itemContext = useMemo(
-        () => ({ focusedIndex, handleSelect, selectedIndex, handleFocus }),
-        [focusedIndex, handleSelect, selectedIndex, handleFocus]
-    )
+    const mergedReferenceRefs = mergeRefs([refs.setReference, referenceRef])
 
     return (
         <>
             <div
-                ref={referenceMerged}
+                ref={mergedReferenceRefs}
                 {...getReferenceProps()}
                 className="select-anchor"
                 tabIndex={0}
-                onKeyDown={(e) => {
-                    if (
-                        ["ArrowDown", "ArrowUp", "Enter"].indexOf(e.key) !== -1
-                    ) {
-                        if (selectedIndex === undefined) setFocusedIndex(0)
-                        setIsOpen(!isOpen)
-                    }
-                }}
             >
-                <p>
-                    {selectedIndex !== undefined
-                        ? labels.current[selectedIndex]
-                        : labelText}
-                </p>
+                <p>{selectedLabel ?? labelText}</p>
                 <span className="arrow" data-is-open={isOpen}>
                     <ChevronDown size={18} />
                 </span>
             </div>
 
-            {isOpen && (
-                <FloatingFocusManager context={context} modal={false}>
-                    <div
-                        ref={refs.setFloating}
-                        style={floatingStyles}
-                        {...getFloatingProps()}
-                    >
-                        {/* <div
-                            className="select-floating"
-                            style={{
-                                width: `${referenceRef.current?.getBoundingClientRect().width}px`,
-                            }}
+            <SelectContext.Provider value={selectContext}>
+                {isOpen && (
+                    <FloatingFocusManager context={context} modal={false}>
+                        <div
+                            ref={refs.setFloating}
+                            style={floatingStyles}
+                            {...getFloatingProps()}
                         >
-                            {children}
-                        </div> */}
-
-                        <ItemContext.Provider value={itemContext}>
-                            <ArrowKeyStepper
-                                columnCount={1}
-                                rowCount={items.current.length}
-                                scrollToRow={focusedIndex}
-                                onScrollToChange={({ scrollToRow }) =>
-                                    setFocusedIndex(scrollToRow)
-                                }
-                                mode="cells"
+                            <div
+                                className="select-floating"
+                                style={{
+                                    width: referenceRef.current?.getBoundingClientRect()
+                                        .width,
+                                }}
                             >
-                                {({ onSectionRendered }) => (
-                                    <div
-                                        className="select-floating"
-                                        tabIndex={0}
-                                        onKeyDown={(e) => {
-                                            if (
-                                                e.key === "Enter" &&
-                                                focusedIndex !== -1
-                                            )
-                                                handleSelect(focusedIndex!)
-                                        }}
+                                <div className="wrapper">
+                                    <FloatingList
+                                        elementsRef={elementsRef}
+                                        labelsRef={labelsRef}
                                     >
-                                        <List
-                                            width={
-                                                referenceRef.current?.getBoundingClientRect()
-                                                    .width ?? 0
-                                            }
-                                            height={240}
-                                            rowCount={items.current.length}
-                                            rowHeight={40}
-                                            rowRenderer={({
-                                                index,
-                                                key,
-                                                style,
-                                            }) => (
-                                                <Item
-                                                    index={index}
-                                                    key={key}
-                                                    style={style}
-                                                >
-                                                    {labels.current[index]}
-                                                </Item>
-                                            )}
-                                            onSectionRendered={
-                                                onSectionRendered
-                                            }
-                                            scrollToIndex={focusedIndex}
-                                            tabIndex={-1}
-                                        />
-                                    </div>
-                                )}
-                            </ArrowKeyStepper>
-                        </ItemContext.Provider>
-                    </div>
-                </FloatingFocusManager>
-            )}
+                                        {children}
+                                    </FloatingList>
+                                </div>
+                            </div>
+                        </div>
+                    </FloatingFocusManager>
+                )}
+            </SelectContext.Provider>
         </>
     )
 }
 
-const Item = (
-    props: PropsWithChildren<Pick<ListRowProps, "index" | "key" | "style">>
-) => {
-    const { index, key, style, children } = props
+interface OptionProps {
+    children: string
+}
+export const Option = (props: OptionProps) => {
+    const { children } = props
 
-    const { selectedIndex, focusedIndex, handleSelect, handleFocus } =
-        useContext(ItemContext)
+    const { focusedIndex, getItemProps, handleSelect, selectedIndex } =
+        useContext(SelectContext)
+
+    const { index, ref } = useListItem({ label: children })
+
+    const isFocused = index === focusedIndex
+    const isSelected = index === selectedIndex
 
     return (
         <button
-            key={key}
-            className="option"
+            ref={ref}
             role="option"
-            style={style}
-            aria-selected={index === selectedIndex}
-            data-focused={index === focusedIndex}
-            onClick={() => handleSelect(index)}
-            onPointerEnter={() => handleFocus(index)}
-            tabIndex={-1}
+            aria-selected={isSelected}
+            data-focused={isFocused}
+            tabIndex={isFocused ? 0 : -1}
+            className="option"
+            {...getItemProps({
+                onClick: () => handleSelect(index),
+            })}
         >
             {children}
         </button>
     )
 }
-
-interface OptionProps extends PropsWithChildren {}
-const Option = (props: OptionProps) => {
-    const { children } = props
-
-    return <>{children}</>
-}
-Select.Option = Option
