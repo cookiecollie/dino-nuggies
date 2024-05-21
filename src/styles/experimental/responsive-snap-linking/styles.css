@@ -1,0 +1,24 @@
+.demo-grid {
+    @apply grid grid-cols-2 w-[75%] gap-4;
+
+    li a {
+        @apply flex flex-col gap-4 aspect-video;
+    }
+}
+
+@supports (anchor-name: --a) {
+    li:target {
+        anchor-name: --a;
+    }
+
+    li:has(a:is(:hover :focus-visible)) {
+        anchor-name: --a;
+    }
+
+    .demo-grid::before {
+        @apply bg-nikko-400/20;
+        left: anchor(--a left);
+        width: anchor-size(--a width);
+        height: anchor-size(--a height);
+    }
+}
