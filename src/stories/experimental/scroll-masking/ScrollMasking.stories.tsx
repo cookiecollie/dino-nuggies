@@ -9,7 +9,23 @@ export const ScrollMasking: Story = {
         <div className="w-full h-[97vh] flex items-center justify-center">
             <div className="border-2 rounded-xl overflow-hidden w-[50%] h-[75%]">
                 <div className="overflow-auto scroll-mask w-full h-full">
-                    <div className="px-4 py-[30%] flex flex-col gap-4">
+                    <div className="px-4 py-10 flex flex-col gap-4">
+                        <p className="font-bold text-3xl">
+                            Scroll Masking Demo
+                        </p>
+
+                        <p className="font-bold">
+                            Scroll-driven masking animation with the use of{" "}
+                            <span className="font-mono bg-nikko-400/20 rounded-md px-1">
+                                animation-timeline
+                            </span>
+                        </p>
+
+                        <p className="font-bold italic">
+                            Notes: Experimental technology usage. No support for
+                            Firefox and Safari.
+                        </p>
+
                         <p>
                             Lorem ipsum dolor sit amet, consectetur adipiscing
                             elit. Aliquam aliquet sed eros id accumsan. In

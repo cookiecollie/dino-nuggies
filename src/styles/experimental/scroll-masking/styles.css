@@ -1,6 +1,6 @@
 .scroll-mask {
     --mask-color: white;
-    --mask-range: 30rem;
+    --mask-range: 10rem;
     --mask-size: 8rem;
 
     animation:
