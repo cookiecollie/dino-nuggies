@@ -36,8 +36,12 @@ interface ItemContextType {
 
 const ItemContext = createContext<ItemContextType>({} as ItemContextType)
 
-export const VirtualizedSelect = (props: SelectProps) => {
-    const { children, labelText = "Select..." } = props
+interface VirtualizedSelectProps extends SelectProps {
+    overscan?: number
+}
+
+export const VirtualizedSelect = (props: VirtualizedSelectProps) => {
+    const { children, labelText = "Select...", overscan = 2 } = props
 
     const [isOpen, setIsOpen] = useState(false)
 
@@ -184,6 +188,7 @@ export const VirtualizedSelect = (props: SelectProps) => {
                                             }
                                             scrollToIndex={focusedIndex}
                                             tabIndex={-1}
+                                            overscanRowCount={overscan}
                                         />
                                     </div>
                                 )}
