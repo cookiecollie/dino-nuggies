@@ -1,0 +1,31 @@
+.nav {
+    &-navigation {
+        --nav-indicator-left: 0px;
+        --nav-indicator-top: 0px;
+        --nav-indicator-width: 100px;
+        --nav-indicator-height: 0px;
+
+        @apply flex gap-4;
+    }
+
+    &-navigation::after {
+        transition: background-color, transform, width;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 250ms;
+
+        content: "";
+        @apply absolute left-0 right-0 w-10 h-10 pointer-events-none;
+    }
+
+    &-navigation:has(&-item:is(:hover, :focus-visible)) {
+        &::after {
+            transform: translateX(var(--nav-indicator-left));
+            width: var(--nav-indicator-width);
+
+            @apply bg-nikko-200;
+        }
+    }
+
+    &-item {
+    }
+}
