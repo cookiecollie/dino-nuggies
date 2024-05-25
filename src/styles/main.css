@@ -7,6 +7,8 @@
 
 @import "../styles/magnet-group/styles.css";
 
+@import "../styles/navigation/styles.css";
+
 @import "./input/style.css";
 
 @tailwind base;
