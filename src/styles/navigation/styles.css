@@ -1,31 +1,74 @@
 .nav {
     &-navigation {
-        --nav-indicator-left: 0px;
-        --nav-indicator-top: 0px;
-        --nav-indicator-width: 100px;
-        --nav-indicator-height: 0px;
+        --nav-transition-duration: 0.2s;
+        --nav-transition-delay: 0.2s;
 
-        @apply flex gap-4;
+        @apply flex;
     }
 
     &-navigation::after {
-        transition: background-color, transform, width;
+        transition:
+            opacity calc(var(--nav-transition-duration)),
+            inset calc(var(--nav-transition-duration))
+                calc(var(--nav-transition-delay));
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+        content: "";
+        @apply absolute pointer-events-none z-[-2] rounded-md bg-mine-shaft-400/20;
+
+        inset: calc(var(--nav-indicator-top) * 1px)
+            calc(100% - (var(--nav-indicator-right) * 1px))
+            calc(100% - (var(--nav-indicator-bottom) * 1px))
+            calc(var(--nav-indicator-left) * 1px);
+
+        opacity: var(--nav-indicator-active, 0);
+    }
+
+    &-navigation:hover {
+        --nav-indicator-active: 1;
+    }
+
+    &-navigation:hover::after {
+        transition:
+            opacity calc(var(--nav-transition-duration))
+                calc(var(--nav-transition-delay)),
+            inset calc(var(--nav-transition-duration));
+    }
+
+    &-navigation::before {
+        transition: transform, width;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         transition-duration: 250ms;
 
         content: "";
-        @apply absolute left-0 right-0 w-10 h-10 pointer-events-none;
+
+        @apply absolute pointer-events-none z-[-1] h-0.5 rounded-full bg-mine-shaft-400;
+
+        width: calc(var(--nav-active-width) - var(--nav-active-padding) * 2);
     }
 
-    &-navigation:has(&-item:is(:hover, :focus-visible)) {
-        &::after {
-            transform: translateX(var(--nav-indicator-left));
-            width: var(--nav-indicator-width);
+    &-navigation[data-orientation="horizontal"]::before {
+        @apply bottom-0;
 
-            @apply bg-nikko-200;
-        }
+        transform: translateX(
+            calc(var(--nav-active-left) + var(--nav-active-padding))
+        );
+    }
+
+    &-navigation[data-orientation="vertical"]::before {
+        transform: translateY(var(--nav-active-top));
     }
 
     &-item {
+        transition: color;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 250ms;
+
+        @apply h-10 flex items-center justify-center px-4 font-semibold text-mine-shaft-400;
+    }
+
+    &-item:hover,
+    &-item:focus-visible {
+        @apply text-black;
     }
 }
