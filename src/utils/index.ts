@@ -1,3 +1,5 @@
+export { type PolymorphicProps } from "./PolymorphicProps";
+
 import { ItemList, useListItem } from "./ItemList"
 export { ItemList, useListItem }
 
