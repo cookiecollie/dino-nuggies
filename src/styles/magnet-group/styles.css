@@ -1,0 +1,39 @@
+.magnet-group {
+    &-wrapper {
+        --magnet-group-indicator-color: rgb(136 136 136 / 0.2);
+        --magnet-group-indicator-rounded: 0.5rem;
+    }
+
+    &-wrapper::after {
+        transition:
+            opacity calc(var(--global-transition-duration)),
+            inset calc(var(--global-transition-duration))
+                calc(var(--global-transition-delay));
+        transition-timing-function: calc(var(--global-transition-timing-func));
+
+        content: "";
+
+        background-color: var(--magnet-group-indicator-color);
+        border-radius: var(--magnet-group-indicator-rounded);
+
+        @apply absolute pointer-events-none z-[-2];
+
+        inset: calc(var(--magnet-group-indicator-top) * 1px)
+            calc(100% - var(--magnet-group-indicator-right) * 1px)
+            calc(100% - var(--magnet-group-indicator-bottom) * 1px)
+            calc(var(--magnet-group-indicator-left) * 1px);
+
+        opacity: var(--magnet-group-indicator-active, 0);
+    }
+
+    &-wrapper:hover {
+        --magnet-group-indicator-active: 1;
+    }
+
+    &-wrapper:hover::after {
+        transition:
+            opacity calc(var(--global-transition-duration))
+                calc(var(--global-transition-delay)),
+            inset calc(var(--global-transition-duration));
+    }
+}
