@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
 
 @import "../styles/navigation/styles.css";
+@import "../styles/stagger-group/styles.css";
 
 @import "./input/style.css";
 
@@ -20,4 +21,15 @@ body,
     --global-transition-duration: 0.2s;
     --global-transition-delay: 0.2s;
     --global-transition-timing-func: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes test-animation {
+    0% {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    100% {
+        opacity: 1;
+    }
 }

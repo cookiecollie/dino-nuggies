@@ -1,0 +1,18 @@
+.stagger {
+    &-child {
+        animation-name: var(--stagger-group-animation-name);
+        animation-duration: var(
+            --stagger-group-animation-duration,
+            var(--global-transition-duration)
+        );
+        animation-delay: calc(
+            var(--stagger-group-animation-order) *
+                var(
+                    --stagger-group-animation-delay,
+                    var(--global-transition-delay)
+                )
+        );
+        animation-fill-mode: both;
+        animation-timing-function: var(--global-transition-timing-func);
+    }
+}
