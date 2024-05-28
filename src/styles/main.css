@@ -11,3 +11,9 @@ body,
     font-optical-sizing: auto;
     @apply h-full text-black font-medium;
 }
+
+:root {
+    --global-transition-duration: 0.2s;
+    --global-transition-delay: 0.2s;
+    --global-transition-timing-func: cubic-bezier(0.4, 0, 0.2, 1);
+}
