@@ -1,4 +1,5 @@
 import { ItemList, useListItem } from "./ItemList"
+export { type PolymorphicProps } from "./PolymorphicProps"
 export { ItemList, useListItem }
 
 export const mergeRefs = <T>(
@@ -14,8 +15,6 @@ export const mergeRefs = <T>(
         })
     }
 }
-export { type PolymorphicProps } from "./PolymorphicProps";
-
 
 export const shuffle = <T>(array: T[]) => {
     for (let i = array.length - 1; i--; ) {
