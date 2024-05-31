@@ -1,17 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
-@import "./tabs/styles.css";
-@import "./select/styles.css";
 
 @import "./breadcrumb/styles.css";
-
-@import "../styles/navigation/styles.css";
-@import "../styles/stagger-group/styles.css";
-
-@import "../styles/magnet-group/styles.css";
-
-@import "../styles/navigation/styles.css";
-
-@import "./input/style.css";
+@import "./input/styles.css";
+@import "./magnet-group/styles.css";
+@import "./navigation/styles.css";
+@import "./select/styles.css";
+@import "./stagger-group/styles.css";
+@import "./tabs/styles.css";
 
 @tailwind base;
 @tailwind components;
