@@ -7,7 +7,7 @@ import {
     useMemo,
     useState,
 } from "react"
-import { IsList, useCustomListItem } from "../../utils"
+import { ItemList, useListItem } from "../../utils"
 
 interface TabsProps extends PropsWithChildren {
     hasIndicator?: boolean
@@ -71,7 +71,7 @@ const Labels = (props: CommonProps) => {
             <LabelsContext.Provider
                 value={useMemo(() => ({ onClickGetStyle }), [onClickGetStyle])}
             >
-                <IsList>{children}</IsList>
+                <ItemList>{children}</ItemList>
             </LabelsContext.Provider>
 
             <span
@@ -89,7 +89,7 @@ Tabs.Labels = Labels
 const Label = (props: CommonProps) => {
     const { children } = props
 
-    const { index, ref } = useCustomListItem()
+    const { index, ref } = useListItem()
 
     const { handleSelect, selectedIndex } = useContext(TabsContext)
 
@@ -138,7 +138,7 @@ const Panels = (props: CommonProps) => {
 
     return (
         <div className="panels">
-            <IsList>{children}</IsList>
+            <ItemList>{children}</ItemList>
         </div>
     )
 }
@@ -147,7 +147,7 @@ Tabs.Panels = Panels
 const Panel = (props: CommonProps) => {
     const { children } = props
 
-    const { index, ref } = useCustomListItem()
+    const { index, ref } = useListItem()
 
     const { selectedIndex } = useContext(TabsContext)
 
