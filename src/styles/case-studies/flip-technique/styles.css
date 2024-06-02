@@ -1,0 +1,23 @@
+.cs-square {
+    --cs-flip-height: 5rem;
+
+    transition-duration: var(--global-transition-duration);
+    transition-delay: var(--global-transition-delay);
+    transition-timing-function: var(--global-transition-timing-func);
+    transform-origin: top left;
+
+    @apply bg-nikko-400 absolute;
+
+    height: var(--cs-flip-height);
+    width: var(--cs-flip-height);
+
+    &[data-flip="first"] {
+        top: 0;
+        left: 0;
+    }
+
+    &[data-flip="last"] {
+        top: 10rem;
+        left: 20rem;
+    }
+}

@@ -8,6 +8,8 @@
 @import "./stagger-group/styles.css";
 @import "./tabs/styles.css";
 
+@import "./case-studies/flip-technique/styles.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

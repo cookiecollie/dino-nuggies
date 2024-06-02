@@ -10,6 +10,7 @@
         "**/src/components/**/*.tsx": "${filename} - Component",
         "**/src/components/**/index.tsx": "${filename} - Component || ${dirname} ||",
         "**/src/stories/**/*.stories.tsx": "${filename} - Story",
-        "**/src/styles/**/styles.css": "${filename} - Style || ${dirname} ||"
+        "**/src/styles/**/styles.css": "${filename} - Style || ${dirname} ||",
+        "**/src/case-studies/**/*.tsx": "${filename} - Case Study"
     }
 }
