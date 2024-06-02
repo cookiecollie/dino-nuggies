@@ -1,6 +1,7 @@
 import { ItemList, useListItem } from "./ItemList"
+import { useDisclosure } from "./hooks"
 export { type PolymorphicProps } from "./PolymorphicProps"
-export { ItemList, useListItem }
+export { ItemList, useDisclosure, useListItem }
 
 export const mergeRefs = <T>(
     refs: Array<React.MutableRefObject<T> | React.LegacyRef<T> | null>
